@@ -47,6 +47,12 @@ class User extends Authenticatable
         $user->name=$request->input('name');
     }
 
+    public function update_teacher_details(Request $request, $id)
+    {
+        $user=User::find($id);
+        $user->name=$request->input('name');
+    }
+
     use Notifiable;
 
     /**

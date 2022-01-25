@@ -53,14 +53,21 @@ class TeacherController extends Controller
             'speciality' => 'required', 
 
         ]);
-        $teacher1=new Teachers();
-        $teacher = $teacher1->store_details($request);
 
-        $user=new User();
-        $user1= $user->store_details_teacher($request);
-        
+        DB::beginTransaction();
+        try{
+            $teacher1=new Teachers();
+            $teacher = $teacher1->store_details($request);
+    
+            $user=new User();
+            $user1= $user->store_details_teacher($request);
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+        DB::commit();
         return view('admin.home')->with('message','Student created successfully');
-        
     }
 
     /**
@@ -97,8 +104,22 @@ class TeacherController extends Controller
     {
         $teacher = new Teachers();
         $teacher->update_details($request, $Tid);
-       
-        return redirect('/home');
+
+    
+        DB::beginTransaction();
+        try{
+            $teacher = new Teachers();
+            $teacher->update_details($request, $Tid);
+
+            $user1=new User();
+            $users = $user1->update_teacher_details($request, $Tid);
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+            DB::commit();
+            return view('admin.home')->with('message','Student created successfully');
     }
 
     /**
@@ -109,8 +130,19 @@ class TeacherController extends Controller
      */
     public function destroy($Tid)
     {
-        $teacher=Teachers::find($Tid);  
-        $teacher->delete();  
-        return redirect('/home');
+        DB::beginTransaction();
+        try{
+            $teacher=Teachers::find($Tid);  
+            $teacher->delete();  
+
+            $user1=User::find($Rid);  
+            $user1->delete(); 
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+            DB::commit();
+            return view('admin.home'); 
     }
 }

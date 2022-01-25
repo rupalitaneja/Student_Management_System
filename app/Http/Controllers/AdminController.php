@@ -113,9 +113,20 @@ class AdminController extends Controller
      */
     public function destroy($adminid)
     {
-        $admin=Admin::find($adminid);  
-        $admin->delete();  
-        return view('admin.home');
+        DB::beginTransaction();
+        try{
+            $admin=Admin::find($adminid);  
+            $admin->delete(); 
+
+            $user1=User::find($Rid);  
+            $user1->delete(); 
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+            DB::commit();
+            return view('admin.home'); 
     }
     
     public function search(Request $request)
