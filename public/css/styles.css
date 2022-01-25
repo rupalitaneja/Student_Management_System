@@ -1,0 +1,33 @@
+body, html{margin-top:20px;
+  /* background-color: #e7f1eb; */
+} 
+.widget .panel, .widget.panel {
+  /* background-color: #e7f1eb; */
+  overflow: hidden;
+}
+.number{
+  font-size: xx-large;
+    font-weight: bold;
+}
+.widget {
+  /* margin-bottom: 20px; */
+  border: 0;
+}
+.container {
+  width: 970px;
+  /* background-color: #e7f1eb; */
+}
+.bg-danger {
+  background-color: #f05050;
+  color: #fff!important;
+}
+
+.bg-info {
+  background-color: #23b7e5;
+  color: #fff!important;
+}
+
+.bg-primary {
+  background-color: #5d9cec;
+  color: #fff!important;
+}
