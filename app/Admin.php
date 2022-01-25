@@ -2,6 +2,7 @@
 
 namespace App;
 use DB;
+use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,20 +18,18 @@ class Admin extends Model
         // $admin->Email=$request->input('Email');
         $admin->number=$request->input('number');
         $admin->Address=$request->input('Address');
-        $admin->save();
-        
+        $admin->save();  
     }
     public function show_details()
     {
-        $admins = DB::table('admins')
-        ->leftJoin('users', 'admins.adminId', '=', 'users.id')->paginate(2);
+        $admins = Admin::leftJoin('users','users.id', '=' , 'admins.adminId')
+        ->paginate(2);
         return $admins;
     }
 
     public function edit_details($id)
     {
-        $admins = DB::table('admins')
-        ->leftJoin('users', 'admins.adminId', '=', 'users.id')->get();
+        $admins = Admin::leftJoin('users', 'admins.adminId', '=', 'users.id')->get();
         return $admins;
  
     }
@@ -45,14 +44,13 @@ class Admin extends Model
     }
     public function search($search)
     {
-        $student = DB::table('users')
-        ->Join('students', 'students.Sid', '=', 'users.id')
+        $student = Student::leftJoin('users','users.id', '=' , 'students.Sid')
         ->where('users.name', 'LIKE', '%' . $search . '%')
-        ->get();
+        ->paginate(2);
         return $student;
     }
 
-    public function searchTeacher($search)
+    public function search_teacher($search)
     {
 
         $teacher = DB::table('users')

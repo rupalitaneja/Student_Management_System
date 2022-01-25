@@ -40,12 +40,19 @@ class AdminController extends Controller
         $this->validate($request, [
             'Name'=>'required',
             'Email' => 'required|email']);
-    
-        $admin=new Admin();
-        $admin1 = $admin->store_data($request);
-        $user=new User();
-        $user1=$user->store_details_admin($request);
-        return view('admin.home');
+        DB::beginTransaction();
+        try{
+            $admin=new Admin();
+            $admin1 = $admin->store_data($request);
+            $user=new User();
+            $user1=$user->store_details_admin($request);
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+            DB::commit();
+            return view('admin.home');  
     }
     /**
      * Display the specified resource.
@@ -53,17 +60,7 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
-     //extra
-     public function show()
-    {
-        $user= Auth::user();
-        $students = DB::table('students')
-        ->leftJoin('users', 'students.Sid', '=', 'users.id')
-        ->paginate(2);
-        $details= Admin::find($user);
-        return view('admin.showDetails', compact('user'));
-    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -85,9 +82,21 @@ class AdminController extends Controller
      */
     public function update(Request $request, $adminid)
     {
-        $admin=new Admin();
-        $admin1 = $admin->update_admin($adminid);
-   
+        
+        DB::beginTransaction();
+        try{
+            $admin=new Admin();
+            $admin1 = $admin->update_admin($adminid);
+
+            $user1=new User();
+            $users = $user1->update_admin($adminid);
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+            DB::commit();
+            return view('admin.home')->with('message','Student created successfully');
         // $user=User::find();
         // $user->Name=$request->input('Name');
         // $user->Email=$request->input('Email');
@@ -120,7 +129,7 @@ class AdminController extends Controller
             return \Redirect::back()->with('success','No record found!!');
     }
 
-    public function searchTeacher(Request $request)
+    public function search_teacher(Request $request)
     {
 
         $search = $request->input('search');

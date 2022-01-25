@@ -64,4 +64,4 @@ Route::get('/changePassword','HomeController@showChangePasswordForm');
 Route::post('/changePassword','HomeController@changePassword')->name('changePassword');
 
 Route::get('/search','AdminController@search')->name('searchName');
-Route::get('/searchTeacher','AdminController@searchTeacher')->name('searchTeacherName');
+Route::get('/searchTeacher','AdminController@search_teacher')->name('searchTeacherName');

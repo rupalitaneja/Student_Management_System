@@ -27,9 +27,15 @@
   align-items: center;
 }
     </style>
-    <body>
-<div class="container"><br><br>
-  
+ @include('student.search')
+ <br>
+@if(session()->has('success'))
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+    </div>
+    @endif
+
+    
         <p> The Search results are :</p>
     <!-- <h2>Sample User details</h2> --><br><br>
     <table class="table table-striped">
@@ -68,7 +74,7 @@
             @endforeach
         </tbody>
     </table>
-
+    {{$details->links()}}
 </div>
 </body>
-</html?
+</html>

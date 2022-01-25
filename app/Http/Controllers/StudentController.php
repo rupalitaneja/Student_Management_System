@@ -64,10 +64,10 @@ class StudentController extends Controller
         DB::beginTransaction();
         try{
             $student1 = new Student();
-        $students = $student1->store_data($request);
+            $students = $student1->store_data($request);
 
-        $user1=new User();
-        $users = $user1->store_details_student($request);
+            $user1=new User();
+            $users = $user1->store_details_student($request);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -136,11 +136,18 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $student=Student::find($id);  
-        $student->delete();  
-        $user1=User::find($id);  
-        $user1->delete();  
-        return view('admin.home');
-        
+        DB::beginTransaction();
+        try{
+            $student=Student::find($id);  
+            $student->delete();  
+            $user1=User::find($id);  
+            $user1->delete(); 
+                
+        }catch(ValidationException $e){
+            DB::rollback();
+            throw $e;
+        }
+            DB::commit();
+            return view('admin.home');   
     }
 }
