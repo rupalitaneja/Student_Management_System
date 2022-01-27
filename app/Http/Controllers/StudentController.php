@@ -61,8 +61,8 @@ class StudentController extends Controller
             'mentor' => 'required',
         ]);
        
-        DB::beginTransaction();
         try{
+            DB::beginTransaction();
             $inputArray = [
                 'Sid' => Input::get('Sid'),
                 'email' => Input::get('email'),
@@ -80,13 +80,13 @@ class StudentController extends Controller
 
             $user1=new User();
             $users = $user1->storeDetailsStudent($inputArray);
+            DB::commit();
+            return Redirect('/home');
                 
         }catch(ValidationException $e){
             DB::rollback();
-            throw $e;
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
         }
-            DB::commit();
-            return Redirect('/home');
     } 
 
     /**
@@ -95,12 +95,6 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function show($Sid)
-    // {
-    //     $student=Student::find($Sid);
-    //     $student=Student::all();
-    //     return view('student',['students'=>$student,'student'=>$student,'layout'=>'show']);
-    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -152,8 +146,8 @@ class StudentController extends Controller
 
             $user1=new User();
             $users = $user1->updateDetails($inputArray, $Sid);
-               DB::commit();
-                return Redirect('/home');
+            DB::commit();
+            return Redirect('/home');
         }catch(Exception $e){
             DB::rollback();
             return Redirect()->back()->with('error','Something went wrong. Please try again'); 

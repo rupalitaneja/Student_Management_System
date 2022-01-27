@@ -15,11 +15,12 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     { 
-        $admin1 = new Admin();
-        $admins= $admin1->showDetails();
-        return view('admin.index', compact('admins'));  
+        $admins = Admin::paginate(5);
+        if ($request->ajax()){
+        return view('admin.index', compact('admins')); 
+        } 
     }
     /**
      * Show the form for creating a new resource.
@@ -41,9 +42,9 @@ class AdminController extends Controller
         $this->validate($request, [
             'Name'=>'required',
             'Email' => 'required|email']);
-        DB::beginTransaction();
 
         try{
+            DB::beginTransaction();
             $inputArray = [
                 'adminId' => Input::get('adminId'),
                 'email' => Input::get('email'),
@@ -55,13 +56,14 @@ class AdminController extends Controller
             $admin1 = $admin->storeData($inputArray);
             $user=new User();
             $user1=$user->storeDetailsAdmin($inputArray);
-                
-        }catch(ValidationException $e){
-            DB::rollback();
-            throw $e;
-        }
             DB::commit();
             return Redirect('/home'); 
+                
+        }catch(Exception $e){
+            DB::rollback();
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
+        }
+            
     }
     /**
      * Display the specified resource.
@@ -91,8 +93,11 @@ class AdminController extends Controller
      */
     public function update(Request $request, $adminId)
     {
-        DB::beginTransaction();
+        $this->validate($request, [
+            'Name'=>'required',
+            'Email' => 'required|email']);
         try{
+            DB::beginTransaction();
             $inputArray = [
                 'name' => Input::get('name'),
                 'number' => Input::get('number'),
@@ -104,20 +109,20 @@ class AdminController extends Controller
 
             $user1=new User();
             $users = $user1->updateDetails($inputArray, $adminId);
-                
-        }catch(ValidationException $e){
-            DB::rollback();
-            throw $e;
-        }
             DB::commit();
             return view('admin.home')->with('message','Student created successfully');
+                
+        }catch(Exception $e){
+            DB::rollback();
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
+        }
+            
         // $user=User::find();
         // $user->Name=$request->input('Name');
         // $user->Email=$request->input('Email');
         // $user->password = bcrypt('secret');
         // $user->role=0;
         // $user->save();
-       return redirect('/home');
     }
     /**
      * Remove the specified resource from storage.

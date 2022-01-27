@@ -61,7 +61,12 @@
  <button type="submit" class="btnfamily" class="btn-btn" onclick="return confirm('Are you sure you want to update this item?');">Update</button>  
  <input type="hidden" name="_token" value="{{ csrf_token() }}" />
  </form>  
-   
+ @if ($errors->any())
+          <div class="alert alert-danger">
+         <script>     alert(" Something Went Wrong"); </script>;
+                    
+             </div>
+             @endif
       </div> 
 </body>
 </html>

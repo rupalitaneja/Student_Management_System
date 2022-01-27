@@ -121,13 +121,17 @@
            <div class="box">      
                <label for="speciality">Speciality</label><br/><br/>  
                <input id="fname" type="text" class="form-control" name="speciality" value={{$teacher->speciality}}><br/><br/>  
-           </div>  
-          
+           </div>    
  <br/>  
-   
  <button type="submit" class="btn-btn" >Update</button>  
  <input type="hidden" name="_token" value="{{ csrf_token() }}" />
  </form>  
+    @if ($errors->any())
+            <div class="alert alert-danger">
+            <script>     alert(" Something Went Wrong"); </script>;
+                        
+                </div>
+                @endif
    
       </div> 
  @endif
