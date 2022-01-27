@@ -61,7 +61,7 @@ class AdminController extends Controller
             throw $e;
         }
             DB::commit();
-            return view('admin.home');  
+            return Redirect('/home'); 
     }
     /**
      * Display the specified resource.
@@ -141,7 +141,7 @@ class AdminController extends Controller
             throw $e;
         }
             DB::commit();
-            return view('admin.home'); 
+            return Redirect('/home');
     } 
 } 
 

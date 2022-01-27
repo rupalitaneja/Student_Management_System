@@ -19,14 +19,6 @@ class Student extends Model
         return $students;
     }
 
-    // public function display_details_to_students()
-    // {
-    //     $students = Students::table('students')
-    //     ->leftJoin('users', 'students.Sid', '=', 'users.id')
-    //     ->paginate(2);
-    //     return $students;
-    // }
-
     public function storeData($input)
     {
         $student=new self();
@@ -38,9 +30,7 @@ class Student extends Model
         $student->address=$input['address'];
         $student->course_id=$input['course_id'];
         $student->mentor=$input['mentor'];
-        $student->save();
-        // return $student;
-        
+        $student->save();  
     }
 
     public function updateDetails($input, $Sid)

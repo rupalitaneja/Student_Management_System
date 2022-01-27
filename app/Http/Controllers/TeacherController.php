@@ -78,7 +78,7 @@ class TeacherController extends Controller
             throw $e;
         }
         DB::commit();
-        return view('admin.home')->with('message','Student created successfully');
+        return Redirect('/home');
     }
 
     /**
@@ -133,7 +133,7 @@ class TeacherController extends Controller
             throw $e;
         }
             DB::commit();
-            return view('admin.home')->with('message','Student created successfully');
+            return Redirect('/home');
     }
 
     /**
@@ -157,7 +157,7 @@ class TeacherController extends Controller
             throw $e;
         }
             DB::commit();
-            return view('admin.home'); 
+            return Redirect('/home');
     }
 
     public function searchTeacher(Request $request)
