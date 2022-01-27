@@ -91,7 +91,6 @@ class AdminController extends Controller
      */
     public function update(Request $request, $adminId)
     {
-         
         DB::beginTransaction();
         try{
             $inputArray = [

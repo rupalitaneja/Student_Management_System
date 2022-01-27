@@ -162,10 +162,10 @@ class StudentController extends Controller
         DB::beginTransaction();
         try{
             $student1= new Student();
-            $student->deleteStudent($id);
+            $student1->deleteStudent($id);
          
             $user1=new User();  
-            $user->deleteUser($id); 
+            $user1->deleteUser($id); 
                 
         }catch(ValidationException $e){
             DB::rollback();

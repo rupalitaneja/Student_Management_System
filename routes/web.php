@@ -33,7 +33,6 @@ Route::get('/deleteS/{Sid}',"StudentController@destroy");
 Route::get('/viewStudentList','StudentController@indexStudent');
 Route::get('/viewCourseList','CourseController@indexCourse');
 
-
 //Teachers
 Route::get('/createTeacher',"TeacherController@create");
 Route::post('/storeT',"TeacherController@store");
@@ -41,7 +40,6 @@ Route::get('/viewTeacher','TeacherController@index');
 Route::get('/editT/{Tid}',"TeacherController@edit");
 Route::post('/updateT/{Tid}',"TeacherController@updateT");
 Route::get('/deleteT/{Tid}',"TeacherController@destroy");
- 
 
 //Courses
 Route::get('/createCourse',"CourseController@createC");
