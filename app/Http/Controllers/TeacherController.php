@@ -17,21 +17,15 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index()
-    // {
-        
-    //     $teacher1= new Teachers();
-    //     $teachers=$teacher1->viewAllTteachers();
-    //     return view('Teacherlist', compact('teachers')); 
-    // }
+  
 
     public function index(Request $request)
     {
-        $teacher = Teachers::paginate(5);
+        $teachers = Teachers::paginate(5);
         if ($request->ajax()) {
-            return view('Teacherlist', compact('teacher'));
+            return view('Teacherlist', compact('teachers'));
         }
-        return view('Teacherlist',compact('teacher'));
+        return view('Teacherlist',compact('teachers'));
     }
 
     /**
@@ -61,7 +55,6 @@ class TeacherController extends Controller
             'name' => 'required|min:4', 
             'number' => 'required', 
             'speciality' => 'required', 
-
         ]);
 
         DB::beginTransaction();
@@ -123,8 +116,15 @@ class TeacherController extends Controller
      */
     public function updateT(Request $request, $Tid)
     {
-        DB::beginTransaction();
         try{
+            $this->validate($request, [
+                'Tid' => 'required',
+                'email' => 'required|email', 
+                'name' => 'required|min:4', 
+                'number' => 'required', 
+                'speciality' => 'required', 
+            ]);
+            DB::beginTransaction();
             $inputArray = [
                 'name' => Input::get('name'),
                 'number' => Input::get('number'),
@@ -136,13 +136,13 @@ class TeacherController extends Controller
 
             $user1=new User();
             $users = $user1->updateDetails($inputArray, $Tid);
-                
-        }catch(ValidationException $e){
-            DB::rollback();
-            throw $e;
-        }
             DB::commit();
             return Redirect('/home');
+        }catch(ValidationException $e){
+            DB::rollback();
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
+        }
+            
     }
 
     /**

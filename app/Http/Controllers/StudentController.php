@@ -18,27 +18,16 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index()
-    // {
-    //     $student1 = new Student();
-    //     $students=$student1->displayStudents();
-    //     return view('student.index',compact('students'));
-    // }
-    
 
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $student = new Student();
-        $students = $student->searchStudent($search);
         $students = Student::paginate(5);
         if ($request->ajax()) {
             return view('student.index', compact('students'));
         }
         return view('student.new',compact('students'));
     }
- 
-
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -135,8 +124,20 @@ class StudentController extends Controller
      */
     public function update(Request $request, $Sid) 
     {
-        DB::beginTransaction();
+        $this->validate($request, [
+            'Sid' => 'required',
+            'email' => 'required|email', 
+            'name' => 'required|min:4', 
+            'number' => 'required', 
+            'address' => 'required',
+            'class' => 'required', 
+            'birth' => 'required',
+            'course_id' => 'required',
+            'mentor' => 'required',
+        ]);
+        
         try{
+            DB::beginTransaction();
             $inputArray = [
                 'name' => Input::get('name'),
                 'number' => Input::get('number'),
@@ -152,9 +153,10 @@ class StudentController extends Controller
             $user1=new User();
             $users = $user1->updateDetails($inputArray, $Sid);
                DB::commit();
-                return Redirect('/home'); 
+                return Redirect('/home');
         }catch(Exception $e){
             DB::rollback();
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
         }
             
     }
@@ -175,7 +177,7 @@ class StudentController extends Controller
             $user1=new User();  
             $user1->deleteUser($id); 
                 
-        }catch(ValidationException $e){
+        }catch(Exception $e){
             DB::rollback();
             throw $e;
         }
@@ -183,14 +185,13 @@ class StudentController extends Controller
             return Redirect('/home');  
     }
 
-
     public function searchStudent(Request $request)
     {
         $search = $request->input('search');
         $student1 = new Student();
-        $student = $student1->search($search);
-        if($student->count() > 0)
-            return view('student.searchResult')->withDetails($student)->withQuery ( $search );
+        $students = $student1->search($search);
+        if($students->count() > 0)
+            return view('student.index',compact('students'))->withQuery ( $search );
         else
             return \Redirect::back()->with('success','No record found!!');
     }

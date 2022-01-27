@@ -72,6 +72,6 @@
             @endforeach
   </tbody>
 </table>
-{{$teachers->links()}}
+{!! $teachers->render() !!}
 
 </div>
