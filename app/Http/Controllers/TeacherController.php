@@ -17,12 +17,21 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    // public function index()
+    // {
         
-        $teacher1= new Teachers();
-        $teachers=$teacher1->viewAllTteachers();
-        return view('Teacherlist', compact('teachers')); 
+    //     $teacher1= new Teachers();
+    //     $teachers=$teacher1->viewAllTteachers();
+    //     return view('Teacherlist', compact('teachers')); 
+    // }
+
+    public function index(Request $request)
+    {
+        $teacher = Teachers::paginate(5);
+        if ($request->ajax()) {
+            return view('Teacherlist', compact('teacher'));
+        }
+        return view('Teacherlist',compact('teacher'));
     }
 
     /**

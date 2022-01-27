@@ -15,7 +15,7 @@ class Student extends Model
     public function displayStudents()
     {
         $students = Student::leftJoin('users', 'students.Sid', '=', 'users.id')
-        ->paginate(2);
+        ->get();
         return $students;
     }
 
@@ -66,5 +66,20 @@ class Student extends Model
         $student=self::find($id);
         $student->delete();
     }
-}
 
+public function searchStudent($search)
+    {
+        if($search!="")
+        {
+            $students = Student::leftJoin('users', 'students.Sid', '=', 'users.id')
+            ->paginate(2);
+            $students->appends($search);
+        }
+        else
+        {
+            $students = self::paginate(2);
+        }
+        
+        return $students;
+    }
+}

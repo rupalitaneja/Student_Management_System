@@ -17,6 +17,7 @@ class Teachers extends Model
         return $teachers;
     }
 
+
     public function storeDetails($input)
     {
         

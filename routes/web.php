@@ -36,7 +36,7 @@ Route::get('/viewCourseList','CourseController@indexCourse');
 //Teachers
 Route::get('/createTeacher',"TeacherController@create");
 Route::post('/storeT',"TeacherController@store");
-Route::get('/viewTeacher','TeacherController@index');
+Route::get('/viewTeacher','TeacherController@ajaxPagination');
 Route::get('/editT/{Tid}',"TeacherController@edit");
 Route::post('/updateT/{Tid}',"TeacherController@updateT");
 Route::get('/deleteT/{Tid}',"TeacherController@destroy");

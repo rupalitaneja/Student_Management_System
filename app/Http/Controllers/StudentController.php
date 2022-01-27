@@ -18,17 +18,26 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $student1 = new Student();
-        $students=$student1->displayStudents();
-        return view('student.index',compact('students'));
-    }
-    // public function indexStudent()
+    // public function index()
     // {
-    //     $students=$student1->display();
-    //     return view('student.StudentList',['students'=>$students,'layout'=>'index']);
+    //     $student1 = new Student();
+    //     $students=$student1->displayStudents();
+    //     return view('student.index',compact('students'));
     // }
+    
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $student = new Student();
+        $students = $student->searchStudent($search);
+        $students = Student::paginate(5);
+        if ($request->ajax()) {
+            return view('student.index', compact('students'));
+        }
+        return view('student.new',compact('students'));
+    }
+ 
 
     /**
      * Show the form for creating a new resource.
@@ -142,13 +151,12 @@ class StudentController extends Controller
 
             $user1=new User();
             $users = $user1->updateDetails($inputArray, $Sid);
-                
-        }catch(ValidationException $e){
+               DB::commit();
+                return Redirect('/home'); 
+        }catch(Exception $e){
             DB::rollback();
-            throw $e;
         }
-            DB::commit();
-            return Redirect('/home');
+            
     }
 
     /**
@@ -174,6 +182,7 @@ class StudentController extends Controller
             DB::commit();
             return Redirect('/home');  
     }
+
 
     public function searchStudent(Request $request)
     {
