@@ -74,7 +74,7 @@ class HomeController extends Controller
 
     }
 
-    public function show_profile()
+    public function showProfile()
     {
         $role = Auth::user()->role;
         $id= Auth::user()->id;

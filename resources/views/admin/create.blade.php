@@ -40,7 +40,7 @@
           </div>
           <div class="box">
             <label>Name</label><br>
-            <input id="fname" name="Name" type="text" class="form-control"  placeholder="Enter name">
+            <input id="fname" name="name" type="text" class="form-control"  placeholder="Enter name">
           </div>
           <div class="box">
             <label>Email</label><br>
@@ -52,7 +52,7 @@
           </div>
           <div class="box">
             <label>Address</label><br>
-            <input id="fname" name="Address" type="text" class="form-control"  placeholder="Enter Address">
+            <input id="fname" name="address" type="text" class="form-control"  placeholder="Enter Address">
 
         <input class="btnfamily" type="submit" class="btn btn-info" value="Submit">
         <input class="btnfamily2" type="reset" class="btn btn-warning" value="Reset">

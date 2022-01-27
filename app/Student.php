@@ -12,48 +12,69 @@ class Student extends Model
     protected $primaryKey = 'Sid';
     public $incrementing = false;
 
-    public function display()
+    public function displayStudents()
     {
-        $students = DB::table('students')
-        ->leftJoin('users', 'students.Sid', '=', 'users.id')
+        $students = Student::leftJoin('users', 'students.Sid', '=', 'users.id')
         ->paginate(2);
         return $students;
     }
 
-    public function display2()
-    {
-        $students = DB::table('students')
-        ->leftJoin('users', 'students.Sid', '=', 'users.id')
-        ->paginate(2);
-        return $students;
-    }
+    // public function display_details_to_students()
+    // {
+    //     $students = Students::table('students')
+    //     ->leftJoin('users', 'students.Sid', '=', 'users.id')
+    //     ->paginate(2);
+    //     return $students;
+    // }
 
-    public function store_data(Request $request)
+    public function storeData($input)
     {
-        $student=new Student();
-        $student->Sid=$request->input('Sid');
-        $student->name=$request->input('name');
-        $student->number=$request->input('number');
-        $student->birth=$request->input('birth');
-        $student->class=$request->input('class');
-        $student->address=$request->input('address');
-        $student->course_id=$request->input('course_id');
-        $student->mentor=$request->input('mentor');
+        $student=new self();
+        $student->Sid=$input['Sid'];
+        $student->name=$input['name'];
+        $student->number=$input['number'];
+        $student->birth=$input['birth'];
+        $student->class=$input['class'];
+        $student->address=$input['address'];
+        $student->course_id=$input['course_id'];
+        $student->mentor=$input['mentor'];
         $student->save();
+        // return $student;
         
     }
 
-    public function update_details(Request $request, $Sid)
+    public function updateDetails($input, $Sid)
     {
-        $student=Student::find($Sid);
-        $student->name=$request->input('name');
-        $student->number=$request->input('number');
-        $student->birth=$request->input('birth');
-        $student->class=$request->input('class');
-        $student->address=$request->input('address');
-        $student->course_id=$request->input('course_id');
-        $student->mentor=$request->input('mentor');
+        $student=self::find($Sid);
+        $student->name=$input['name'];
+        $student->number=$input['number'];
+        $student->birth=$input['birth'];
+        $student->class=$input['class'];
+        $student->address=$input['address'];
+        $student->course_id=$input['course_id'];
+        $student->mentor=$input['mentor'];
         $student->save();
+        // return $student;
+    }
+
+    public function search($search)
+    {
+        $student = Student::leftJoin('users','users.id', '=' , 'students.Sid')
+        ->where('users.name', 'LIKE', '%' . $search . '%')
+        ->paginate(2);
+        return $student;
+    }
+
+    public function findStudent($id)
+    {
+        $student= Student::find($id);
+        return $student;
+    }
+
+    public function deleteStudent($id)
+    {
+        $student=self::find($id);
+        $student->delete();
     }
 }
 

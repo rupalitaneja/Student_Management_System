@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Student;
+use Illuminate\Support\Facades\Input;
 use Validator;
 use App\User;
 use DB;
@@ -20,14 +21,14 @@ class StudentController extends Controller
     public function index()
     {
         $student1 = new Student();
-        $students=$student1->display();
+        $students=$student1->displayStudents();
         return view('student.index',compact('students'));
     }
-    public function indexStudent()
-    {
-        $students=$student1->display();
-        return view('student.StudentList',['students'=>$students,'layout'=>'index']);
-    }
+    // public function indexStudent()
+    // {
+    //     $students=$student1->display();
+    //     return view('student.StudentList',['students'=>$students,'layout'=>'index']);
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -61,13 +62,26 @@ class StudentController extends Controller
             'course_id' => 'required',
             'mentor' => 'required',
         ]);
+       
         DB::beginTransaction();
         try{
+            $inputArray = [
+                'Sid' => Input::get('Sid'),
+                'email' => Input::get('email'),
+                'name' => Input::get('name'),
+                'number' => Input::get('number'),
+                'birth' => Input::get('birth'),
+                'class' => Input::get('class'),
+                'address' => Input::get('address'),
+                'course_id' => Input::get('course_id'),
+                'mentor' => Input::get('mentor'),
+            ];
+
             $student1 = new Student();
-            $students = $student1->store_data($request);
+            $students = $student1->storeData($inputArray);
 
             $user1=new User();
-            $users = $user1->store_details_student($request);
+            $users = $user1->storeDetailsStudent($inputArray);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -83,12 +97,12 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($Sid)
-    {
-        $student=Student::find($Sid);
-        $student=Student::all();
-        return view('student',['students'=>$student,'student'=>$student,'layout'=>'show']);
-    }
+    // public function show($Sid)
+    // {
+    //     $student=Student::find($Sid);
+    //     $student=Student::all();
+    //     return view('student',['students'=>$student,'student'=>$student,'layout'=>'show']);
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -96,10 +110,10 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($Sid)
+    public function edit($id)
     {
-        $student=Student::find($Sid);
-
+        $student1=new Student();
+        $student = $student1->findStudent($id);
         return view('studentEditDetails',['student'=>$student]);
     }
 
@@ -114,11 +128,20 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try{
+            $inputArray = [
+                'name' => Input::get('name'),
+                'number' => Input::get('number'),
+                'birth' => Input::get('birth'),
+                'class' => Input::get('class'),
+                'address' => Input::get('address'),
+                'course_id' => Input::get('course_id'),
+                'mentor' => Input::get('mentor'),
+            ];
             $student1=new Student();
-            $students = $student1->update_details($request, $Sid);
+            $students = $student1->updateDetails($inputArray, $Sid);
 
             $user1=new User();
-            $users = $user1->update_details($request, $Sid);
+            $users = $user1->updateDetails($inputArray, $Sid);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -138,10 +161,11 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try{
-            $student=Student::find($id);  
-            $student->delete();  
-            $user1=User::find($id);  
-            $user1->delete(); 
+            $student1= new Student();
+            $student->deleteStudent($id);
+         
+            $user1=new User();  
+            $user->deleteUser($id); 
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -149,5 +173,16 @@ class StudentController extends Controller
         }
             DB::commit();
             return view('admin.home');   
+    }
+
+    public function searchStudent(Request $request)
+    {
+        $search = $request->input('search');
+        $student1 = new Student();
+        $student = $student1->search($search);
+        if($student->count() > 0)
+            return view('student.searchResult')->withDetails($student)->withQuery ( $search );
+        else
+            return \Redirect::back()->with('success','No record found!!');
     }
 }

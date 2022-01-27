@@ -11,55 +11,41 @@ class Admin extends Model
     protected $primaryKey = 'adminId';
     public $incrementing = false;
 
-    public function store_data(Request $request)
+    public function storeData($input)
     {
-        $admin->adminId=$request->input('adminId');
-        $admin->Name=$request->input('Name');
-        // $admin->Email=$request->input('Email');
-        $admin->number=$request->input('number');
-        $admin->Address=$request->input('Address');
+        $admin = new self();
+        $admin->adminId=$input['adminId'];
+        $admin->name=$input['name'];;
+        $admin->number=$input['number'];
+        $admin->address=$input['address'];
         $admin->save();  
     }
-    public function show_details()
+    public function showDetails()
     {
         $admins = Admin::leftJoin('users','users.id', '=' , 'admins.adminId')
         ->paginate(2);
         return $admins;
     }
 
-    public function edit_details($id)
+    public function editDetails($id)
     {
         $admins = Admin::leftJoin('users', 'admins.adminId', '=', 'users.id')->get();
         return $admins;
  
     }
-    public function update_admin($adminid)
+    public function updateAdmin($input, $adminId)
     {
-        $admin= Admin::find($adminid);  
-        $admin->name=$request->input('name');
-        // $admin->email=$request->input('email');
-        $admin->number=$request->input('number');
-        $admin->Address=$request->input('Address');
+        $admin= self::find($adminId);  
+        $admin->name=$input['name'];
+        $admin->number=$input['number'];
+        $admin->Address=$input['address'];
         $admin->save();
     }
-    public function search($search)
+
+    public function deleteAdmin($id)
     {
-        $student = Student::leftJoin('users','users.id', '=' , 'students.Sid')
-        ->where('users.name', 'LIKE', '%' . $search . '%')
-        ->paginate(2);
-        return $student;
+        $admin=self::find($id);
+        $admin->delete();
     }
-
-    public function search_teacher($search)
-    {
-
-        $teacher = DB::table('users')
-        ->Join('teachers', 'teachers.Tid', '=', 'users.id')
-        ->where('users.name', 'LIKE', '%' . $search . '%')
-        ->get();
-
-        return $teacher;
-    }
-
 }
 

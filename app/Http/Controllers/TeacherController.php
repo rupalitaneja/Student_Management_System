@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Teachers;
 use Validator;
 use DB;
+use Illuminate\Support\Facades\Input;
 use App\Courses;
 use App\User;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class TeacherController extends Controller
     {
         
         $teacher1= new Teachers();
-        $teachers=$teacher1->view_all();
+        $teachers=$teacher1->viewAllTteachers();
         return view('Teacherlist', compact('teachers')); 
     }
 
@@ -56,11 +57,21 @@ class TeacherController extends Controller
 
         DB::beginTransaction();
         try{
+            $inputArray = [
+                'Tid' => Input::get('Tid'),
+                'name' => Input::get('name'),
+                'email' => Input::get('email'),
+                'number' => Input::get('number'),
+                'designation' => Input::get('designation'),
+                'course_id' => Input::get('course_id'),
+                'speciality' => Input::get('speciality'),
+            ];
+
             $teacher1=new Teachers();
-            $teacher = $teacher1->store_details($request);
+            $teacher = $teacher1->storeDetails($inputArray);
     
             $user=new User();
-            $user1= $user->store_details_teacher($request);
+            $user1= $user->storeDetailsTeacher($inputArray);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -87,9 +98,10 @@ class TeacherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($Tid)
+    public function edit($id)
     {
-        $teacher=Teachers::find($Tid);
+        $teacher1=new Teachers();
+        $teacher = $teacher1->findTeacher($id);
         return view('teacherEditDetails',['teacher'=>$teacher,'layout'=>'edit']);
     }
 
@@ -102,17 +114,19 @@ class TeacherController extends Controller
      */
     public function updateT(Request $request, $Tid)
     {
-        $teacher = new Teachers();
-        $teacher->update_details($request, $Tid);
-
-    
         DB::beginTransaction();
         try{
+            $inputArray = [
+                'name' => Input::get('name'),
+                'number' => Input::get('number'),
+                'designation' => Input::get('designation'),
+                'speciality' => Input::get('speciality'),
+            ];
             $teacher = new Teachers();
-            $teacher->update_details($request, $Tid);
+            $teacher->updateDetails($inputArray, $Tid);
 
             $user1=new User();
-            $users = $user1->update_teacher_details($request, $Tid);
+            $users = $user1->updateDetails($inputArray, $Tid);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -128,15 +142,15 @@ class TeacherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($Tid)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try{
-            $teacher=Teachers::find($Tid);  
-            $teacher->delete();  
+            $teacher1=new Teachers();
+            $teacher1->deleteTeacher($id);  
 
-            $user1=User::find($Rid);  
-            $user1->delete(); 
+            $user1=new User();  
+            $user1->deleteUser($id); 
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -144,5 +158,17 @@ class TeacherController extends Controller
         }
             DB::commit();
             return view('admin.home'); 
+    }
+
+    public function searchTeacher(Request $request)
+    {
+
+        $search = $request->input('search');
+        $teacher1 = new Teachers();
+        $teacher = $teacher1->search($search);
+        if($teacher->count() > 0)
+            return view('teacher.searchResult')->withDetails($teacher)->withQuery ($search);
+    else
+            return \Redirect::back()->with('success','No record found!!');
     }
 }

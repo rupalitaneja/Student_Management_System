@@ -10,33 +10,54 @@ class Teachers extends Model
     protected $primaryKey = 'Tid';
     public $incrementing = false;
 
-    public function view_all()
+    public function viewAllTteachers()
     {
-        $teachers = DB::table('teachers')
-        ->leftJoin('users', 'teachers.Tid', '=', 'users.id')
+        $teachers = Teachers::leftJoin('users', 'teachers.Tid', '=', 'users.id')
         ->paginate(2);
         return $teachers;
     }
 
-    public function store_details()
+    public function storeDetails($input)
     {
-        $teacher = new Teachers();
-        $teacher->Tid=$request->input('Tid');
-        $teacher->name=$request->input('name');
-        $teacher->number=$request->input('number');
-        $teacher->designation=$request->input('designation');
-        $teacher->course_id=$request->input('course_id');
-        $teacher->speciality=$request->input('speciality');
+        
+        $teacher = new self();
+        $teacher->Tid=$input['Tid'];
+        $teacher->name=$input['name'];
+        $teacher->number=$input['number'];
+        $teacher->designation=$input['designation'];
+        $teacher->course_id=$input['course_id'];
+        $teacher->speciality=$input['speciality'];
         $teacher->save();
     }
 
-    public function update_details(Request $request, $Tid)
+    public function updateDetails(Request $request, $Tid)
     {
-        $teacher=Teachers::find($Tid);
-        $teacher->name=$request->input('name');
-        $teacher->number=$request->input('number');
-        $teacher->designation=$request->input('designation');
-        $teacher->speciality=$request->input('speciality');
+        $teacher=self::find($Tid);
+        $teacher->name=$input['name'];
+        $teacher->number=$input['number'];
+        $teacher->designation=$input['designation'];
+        $teacher->speciality=$input['speciality'];
         $teacher->save();
     }
+
+    public function search($search)
+    {
+        $teacher = Teachers::leftJoin('users','users.id', '=' , 'teachers.Tid')
+        ->where('users.name', 'LIKE', '%' . $search . '%')
+        ->paginate(2);
+        return $teacher;
+    }
+
+    public function findTeacher($id)
+    {
+        $teacher= Teachers::find($id);
+        return $teacher;
+    }
+
+    public function deleteTeacher($id)
+    {
+        $student=self::find($id);
+        $student->delete();
+    }
+
 }

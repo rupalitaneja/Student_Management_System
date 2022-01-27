@@ -11,8 +11,7 @@ class Courses extends Model
 
     public function get()
     {
-
-        $course = DB::table('courses')->pluck("name","Cid");
+        $course = Courses::all()->pluck("name","Cid");
         return $course;
     }
 }

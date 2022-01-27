@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Admin;
 use App\User;
 use DB;
+use Illuminate\Support\Facades\Input;
 use Redirect;
 use Validator;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class AdminController extends Controller
     public function index()
     { 
         $admin1 = new Admin();
-        $admins= $admin1->show_details();
+        $admins= $admin1->showDetails();
         return view('admin.index', compact('admins'));  
     }
     /**
@@ -41,11 +42,19 @@ class AdminController extends Controller
             'Name'=>'required',
             'Email' => 'required|email']);
         DB::beginTransaction();
+
         try{
+            $inputArray = [
+                'adminId' => Input::get('adminId'),
+                'email' => Input::get('email'),
+                'name' => Input::get('name'),
+                'number' => Input::get('number'),
+                'address' => Input::get('address'),
+            ];
             $admin=new Admin();
-            $admin1 = $admin->store_data($request);
+            $admin1 = $admin->storeData($inputArray);
             $user=new User();
-            $user1=$user->store_details_admin($request);
+            $user1=$user->storeDetailsAdmin($inputArray);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -70,7 +79,7 @@ class AdminController extends Controller
     public function edit($id) 
     {
         $admin1= new Admin();
-        $admins=$admin->edit_details($id);
+        $admins=$admin->editDetails($id);
         return view('admin.edit', compact('admins'));
     }
     /**
@@ -80,16 +89,22 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $adminid)
+    public function update(Request $request, $adminId)
     {
-        
+         
         DB::beginTransaction();
         try{
+            $inputArray = [
+                'name' => Input::get('name'),
+                'number' => Input::get('number'),
+                'address' => Input::get('address'),
+            ]; 
+
             $admin=new Admin();
-            $admin1 = $admin->update_admin($adminid);
+            $admin1 = $admin->updateAdmin($inputArray, $adminId);
 
             $user1=new User();
-            $users = $user1->update_admin($adminid);
+            $users = $user1->updateDetails($inputArray, $adminId);
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -115,11 +130,11 @@ class AdminController extends Controller
     {
         DB::beginTransaction();
         try{
-            $admin=Admin::find($adminid);  
-            $admin->delete(); 
-
-            $user1=User::find($Rid);  
-            $user1->delete(); 
+            $student1= new Student();
+            $student->deleteAdmin($adminid);
+         
+            $user1=new User();  
+            $user->deleteUser($adminid); 
                 
         }catch(ValidationException $e){
             DB::rollback();
@@ -127,31 +142,6 @@ class AdminController extends Controller
         }
             DB::commit();
             return view('admin.home'); 
-    }
-    
-    public function search(Request $request)
-    {
-        $search = $request->input('search');
-        $admin = new Admin();
-        $student = $admin->search($search);
-        if($student->count() > 0)
-            return view('student.searchResult')->withDetails($student)->withQuery ( $search );
-        else
-            return \Redirect::back()->with('success','No record found!!');
-    }
-
-    public function search_teacher(Request $request)
-    {
-
-        $search = $request->input('search');
-        //create object of Admin model
-        $admin = new Admin();
-        //call search method of Admin model
-        $teacher = $admin->search($search);
-        if($teacher->count() > 0)
-            return view('teacher.searchResult')->withDetails($teacher)->withQuery ($search);
-    else
-            return \Redirect::back()->with('success','No record found!!');
-    }
+    } 
 } 
 
