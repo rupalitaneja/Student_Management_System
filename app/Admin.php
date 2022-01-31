@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Model
 {
+    protected $fillable =['adminId','email','name','number','address'];
+
     protected $primaryKey = 'adminId';
     public $incrementing = false;
 

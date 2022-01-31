@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Teachers extends Model
 {
+    protected $fillable =['Tid','email','name','number','designation','course_id','speciality'];
     protected $primaryKey = 'Tid';
     public $incrementing = false;
 
@@ -19,8 +20,7 @@ class Teachers extends Model
 
 
     public function storeDetails($input)
-    {
-        
+    { 
         $teacher = new self();
         $teacher->Tid=$input['Tid'];
         $teacher->name=$input['name'];

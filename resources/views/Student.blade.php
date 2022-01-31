@@ -17,14 +17,14 @@
         background-position:6px;
         border:1px solid #DADADA;
         margin-top: 3px;
-            margin-bottom: 20px;   
+        margin-bottom: 20px;   
         padding-left:10px;
         font-size:14px;
         box-shadow:0 0 10px;
         -webkit-box-shadow:0 0 10px;
     }
 </style>
-
+  
 @if($layout=='create')
     <div id="first">
     <h5 class="card-title">Enter Student's Information</h5>

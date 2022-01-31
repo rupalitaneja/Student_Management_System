@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    
+    protected $fillable =['Sid','email','name','number','address','course_id','mentor','birth'];
     protected $primaryKey = 'Sid';
     public $incrementing = false;
 

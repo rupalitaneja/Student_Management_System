@@ -39,8 +39,7 @@ class StudentController extends Controller
     {
         $course1 = new Courses();
         $course = $course1->get();
-        return view('student',compact('course'),['layout'=>'create']);
-        
+        return view('student',compact('course'),['layout'=>'create']);    
     }
 
     /**
