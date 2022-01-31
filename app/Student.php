@@ -67,5 +67,12 @@ class Student extends Model
         $student=self::find($id);
         $student->delete();
     }
+
+    public function getRecords()
+    {
+        $student=self::leftJoin('users', 'users.id', '=', 'students.Sid')
+        ->paginate(5);
+        return $student;
+    }
 }
 

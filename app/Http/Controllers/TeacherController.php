@@ -17,11 +17,11 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-  
 
     public function index(Request $request)
     {
-        $teachers = Teachers::paginate(5);
+        $teacher1 = new Teachers();
+        $teachers= $teacher1->getRecords();
         if ($request->ajax()) {
             return view('Teacherlist', compact('teachers'));
         }
@@ -57,8 +57,8 @@ class TeacherController extends Controller
             'speciality' => 'required', 
         ]);
 
-        DB::beginTransaction();
         try{
+            DB::beginTransaction();
             $inputArray = [
                 'Tid' => Input::get('Tid'),
                 'name' => Input::get('name'),
@@ -74,13 +74,13 @@ class TeacherController extends Controller
     
             $user=new User();
             $user1= $user->storeDetailsTeacher($inputArray);
+            DB::commit();
+            return Redirect('/home');
                 
         }catch(ValidationException $e){
             DB::rollback();
-            throw $e;
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
         }
-        DB::commit();
-        return Redirect('/home');
     }
 
     /**
@@ -89,10 +89,6 @@ class TeacherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -174,7 +170,7 @@ class TeacherController extends Controller
 
         $search = $request->input('search');
         $teacher1 = new Teachers();
-        $teacher = $teacher1->search($search);
+        $teacher = $teacher1->searchUser($search);
         if($teacher->count() > 0)
             return view('teacher.searchResult')->withDetails($teacher)->withQuery ($search);
     else

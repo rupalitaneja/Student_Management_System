@@ -17,7 +17,8 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     { 
-        $admins = Admin::paginate(5);
+        $admin1 = new Admin();
+        $admins = $admin1->getRecords();
         if ($request->ajax()){
         return view('admin.index', compact('admins')); 
         } 
@@ -105,7 +106,7 @@ class AdminController extends Controller
             ]; 
 
             $admin=new Admin();
-            $admin1 = $admin->updateAdmin($inputArray, $adminId);
+            $admin1 = $admin->updateDetail($inputArray, $adminId);
 
             $user1=new User();
             $users = $user1->updateDetails($inputArray, $adminId);
@@ -132,20 +133,21 @@ class AdminController extends Controller
      */
     public function destroy($adminid)
     {
-        DB::beginTransaction();
         try{
+            DB::beginTransaction();
             $student1= new Student();
             $student->deleteAdmin($adminid);
          
             $user1=new User();  
-            $user->deleteUser($adminid); 
+            $user->deleteUser($adminid);
+            DB::commit();
+            return Redirect('/home'); 
                 
         }catch(ValidationException $e){
             DB::rollback();
-            throw $e;
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
         }
-            DB::commit();
-            return Redirect('/home');
+            
     } 
 } 
 

@@ -11,7 +11,6 @@ use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-
 class StudentController extends Controller
 {
     /**
@@ -22,7 +21,9 @@ class StudentController extends Controller
 
     public function index(Request $request)
     {
-        $students = Student::paginate(5);
+        $student1= new Student();
+
+        $students = $student1->getRecords();
         if ($request->ajax()) {
             return view('student.index', compact('students'));
         }
@@ -152,20 +153,21 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        DB::beginTransaction();
         try{
+            DB::beginTransaction();
             $student1= new Student();
             $student1->deleteStudent($id);
          
             $user1=new User();  
             $user1->deleteUser($id); 
+            DB::commit();
+            return Redirect('/home'); 
                 
         }catch(Exception $e){
             DB::rollback();
-            throw $e;
+            return Redirect()->back()->with('error','Something went wrong. Please try again'); 
         }
-            DB::commit();
-            return Redirect('/home');  
+             
     }
 
     public function searchStudent(Request $request)

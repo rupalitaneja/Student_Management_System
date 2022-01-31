@@ -52,26 +52,22 @@
   </thead>
   <tbody>
   @foreach($teachers as $teacher)
-                <tr>
-                    <td>{{ $teacher->Tid }}</td>
-                    <td>{{ $teacher->name }}</td>
-                    <td>{{ $teacher->email }}</td>
-                    <td>{{ $teacher->number }}</td>
-                    <td>{{ $teacher->designation }}</td>
-                    <td>{{ $teacher->speciality }}</td>
-                    <td>
-
-                        <a href="{{ url('/editT/'.$teacher->Tid) }}" class="btn btn-sm btn-warning">Edit</a>
-                        
-                        <a href="{{ url('/deleteT/'.$teacher->Tid) }}" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-sm btn-warning">Delete</a>
-                        <input name="_method" type="hidden" value="DELETE">
-                    </td>
-
-
-                </tr>
-            @endforeach
+      <tr>
+        <td>{{ $teacher->Tid }}</td>
+        <td>{{ $teacher->name }}</td>
+        <td>{{ $teacher->email }}</td>
+        <td>{{ $teacher->number }}</td>
+        <td>{{ $teacher->designation }}</td>
+        <td>{{ $teacher->speciality }}</td>
+        <td>
+            <a href="{{ url('/editT/'.$teacher->Tid) }}" class="btn btn-sm btn-warning">Edit</a>
+            
+            <a href="{{ url('/deleteT/'.$teacher->Tid) }}" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-sm btn-warning">Delete</a>
+            <input name="_method" type="hidden" value="DELETE">
+        </td>
+      </tr>
+  @endforeach
   </tbody>
 </table>
 {!! $teachers->render() !!}
-
 </div>

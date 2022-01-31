@@ -41,7 +41,7 @@ class Teachers extends Model
         $teacher->save();
     }
 
-    public function search($search)
+    public function searchUser($search)
     {
         $teacher = Teachers::leftJoin('users','users.id', '=' , 'teachers.Tid')
         ->where('users.name', 'LIKE', '%' . $search . '%')
@@ -61,4 +61,10 @@ class Teachers extends Model
         $student->delete();
     }
 
+    public function getRecords()
+    {
+        $teacher = self::leftJoin('users', 'users.id', '=', 'teachers.Tid')
+        ->paginate(5);
+        return $teacher;
+    }
 }

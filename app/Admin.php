@@ -33,7 +33,7 @@ class Admin extends Model
         return $admins;
  
     }
-    public function updateAdmin($input, $adminId)
+    public function updateDetail($input, $adminId)
     {
         $admin= self::find($adminId);  
         $admin->name=$input['name'];
@@ -46,6 +46,13 @@ class Admin extends Model
     {
         $admin=self::find($id);
         $admin->delete();
+    }
+
+    public function getRecords()
+    {
+        $student=self::leftJoin('users', 'users.id', '=', 'admins.adminId')
+        ->paginate(5);
+        return $student;
     }
 }
 
