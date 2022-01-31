@@ -31,7 +31,7 @@ Route::get('/edit/{Sid}',"StudentController@edit");
 Route::post('/updateS/{Sid}',"StudentController@update");
 Route::get('/deleteS/{Sid}',"StudentController@destroy");
 Route::get('/viewStudentList','StudentController@indexStudent');
-Route::get('/viewCourseList','CourseController@indexCourse');
+Route::get('/viewCourseList','CourseController@indexCourseToStudent');
 
 //Teachers
 Route::get('/createTeacher',"TeacherController@create");

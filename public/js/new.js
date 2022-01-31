@@ -23,7 +23,6 @@ $(document).ready(function()
         var myurl = $(this).attr('href');
         var page=$(this).attr('href').split('page=')[1];
 
-
         getData(page);
     });
 });

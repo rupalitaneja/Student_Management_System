@@ -7,6 +7,7 @@ use Validator;
 use App\User;
 use DB;
 use App\Courses;
+use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -47,20 +48,8 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {   
-        $this->validate($request, [
-            'Sid' => 'required',
-            'email' => 'required|email', 
-            'name' => 'required|min:4', 
-            'number' => 'required', 
-            'address' => 'required',
-            'class' => 'required', 
-            'birth' => 'required',
-            'course_id' => 'required',
-            'mentor' => 'required',
-        ]);
-       
         try{
             DB::beginTransaction();
             $inputArray = [

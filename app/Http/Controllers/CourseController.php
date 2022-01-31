@@ -30,7 +30,7 @@ class CourseController extends Controller
         // return view('Course',['course'=>$course,'layout'=>'index']);
     }
     
-    public function indexCourse()
+    public function indexCourseToStudent()
     {
         $courses=Courses::paginate(2);
         return view('student.CourseList',['courses'=>$courses]);
