@@ -19,6 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('students', 'API\StudentAPIController');
 
-Route::get('getAll','API\StudentAPIController@getAllStudents');
+Route::get('getAllStudents','API\StudentAPIController@getAllStudents');
 
 Route::get('deleteById', 'API\StudentAPIController@deleteById');

@@ -22,32 +22,63 @@ class StudentAPIController extends APIBaseController
 
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [ 'id'=>'required', ]);
-        if ($validator->fails()) {    
-            return $this->sendError('Student ID is required');
+        $id=$request->input('id');
+        $page_number=$request->input('page_number');
+        $page_size=$request->input('page_size');
+        if($id == null) //get all records
+            {
+                // $url = $_SERVER['REQUEST_URI']; 
+                // $url_components = parse_url($url); 
+                // parse_str($url_components['query'], $params); 
+                // $pageNumber = $params['page_number'];
+                // $pageSize = $params['page_size'];
+                // error_log($pageNumber);
+                // error_log($pageSize);
+
+                try{
+                    $student1= new Student();
+                    $students = $student1->getRecords($page_number, $page_size);
+                    if($students == null)
+                        return $this->sendError('failed to find the student');
+                    else
+                        return $this->sendResponse($students,'Students retrieved successfully.');
+                        
+                }catch(Exception $e){
+                    return $this->sendError($e, 'Something went wrong');
+                }
+            }
+        else //get student by Id
+            {
+            $validator = Validator::make($request->all(), [ 'id'=>'required', ]);
+            if ($validator->fails()) {    
+                return $this->sendError('Student ID is required');
+            }
+            try{
+                // $id=$request->input('id');
+                $student1 = new Student();
+                $result=$student1->findStudentById($id);
+                if($result !=null){
+                    return $this->sendResponse($result,'Students retrieved successfully.');
+                }
+                else{
+                    return $this->sendError('failed to find the student');
+                }
         }
-
-            $id=$request->input('id');
-            $student1 = new Student();
-            $result=$student1->findStudentById($id);
-            if($result !=null){
-                return $this->sendResponse($result,'Students retrieved successfully.');
-            }
-            else{
-                return $this->sendError('failed to find the student');
-            }
-
+            catch(Exception $e){
+            return $this->sendError($e, 'Something went wrong');
+        }
 }
-    // http://localhost:8000/api/getAll
-    public function getAllStudents()
-    {
-        $student1= new Student();
-        $students = $student1->getRecords();
-        if($students == null)
-             return $this->sendError('failed to find the student');
-        else
-            return $this->sendResponse($students, 'Students retrieved successfully.');
-    }
+}
+    // // http://localhost:8000/api/getAll
+    // public function getAllStudents()
+    // {
+    //     $student1= new Student();
+    //     $students = $student1->getRecords();
+    //     if($students == null)
+    //          return $this->sendError('failed to find the student');
+    //     else
+    //         return $this->sendResponse($students, 'Students retrieved successfully.');
+    // }
 
     /**
      * Show the form for creating a new resource.

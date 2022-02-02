@@ -74,11 +74,30 @@ class Student extends Model
         }
     }
 
-    public function getRecords()
+    public function getRecords($page_number,$page_size)
     { //to do: negation
-        $student=self::select('users.id','users.name','students.course_id')->leftJoin('users', 'users.id', '=', 'students.Sid')
-        ->paginate(5);
+        // if($page_size == null)
+        //     $page_size = 3;
+        $total_pages = ceil(self::count()/$page_size);
+        // error_log($total_pages);
+        // error_log(self::count());
+        if($page_number<0 || $page_number==null)
+        {
+        $page_number=1;
+        }
+        else if(is_float($page_number))
+        {
+            $page_number=(int)($page_number);  //floor
+        }
+        $student = self::select('users.id','users.name','students.course_id')
+        ->leftJoin('users', 'users.id', '=', 'students.Sid')
+        ->offset($page_number)
+        ->limit($page_size)
+        ->get();
         return $student;
+        // $student=self::select('users.id','users.name','students.course_id')->leftJoin('users', 'users.id', '=', 'students.Sid')
+        // ->get();
+        // return $student;
     }
 
     public function findStudentById($id)
