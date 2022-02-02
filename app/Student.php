@@ -65,14 +65,26 @@ class Student extends Model
     public function deleteStudent($id)
     {
         $student=self::find($id);
-        $student->delete();
+        if($student == null)
+            return false;
+        else
+        {
+            $student->delete();
+            return true;
+        }
     }
 
     public function getRecords()
-    {
-        $student=self::leftJoin('users', 'users.id', '=', 'students.Sid')
+    { //to do: negation
+        $student=self::select('users.id','users.name','students.course_id')->leftJoin('users', 'users.id', '=', 'students.Sid')
         ->paginate(5);
         return $student;
+    }
+
+    public function findStudentById($id)
+    {
+        $findId = self::where('Sid',$id)->first();
+        return $findId;
     }
 }
 

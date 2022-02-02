@@ -35,4 +35,12 @@ class PostRequest extends FormRequest
             'mentor' => 'required'
         ];
     }
+
+    public function rulesForApi()
+{
+    return [
+        'title' => 'required|unique:posts|max:255',
+        'body' => 'required',
+    ];
+}
 }

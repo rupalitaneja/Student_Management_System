@@ -18,8 +18,7 @@ class CourseController extends Controller
     }
 
     public function course()
-    {
-        
+    {   
         return view('admin.student_course');
     }
 

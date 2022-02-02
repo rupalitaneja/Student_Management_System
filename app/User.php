@@ -56,7 +56,13 @@ class User extends Authenticatable
     public function deleteUser($id)
     {
         $user=self::find($id);
+        if($user == null)
+        return false;
+    else
+    {
         $user->delete();
+        return true;
+    }
     }
 
     use Notifiable;
